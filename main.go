@@ -1,12 +1,23 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 )
 
+type SimpleResponse struct {
+	Msg string `json:"msg"`
+}
+
 func home(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Namaste"))
+
+	myRes := &SimpleResponse{
+		Msg: "Namaste",
+	}
+	data, _ := json.Marshal(myRes)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }
 
 func main() {
