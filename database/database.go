@@ -17,7 +17,7 @@ import (
 
 // This is a user defined method to close resources.
 // This method closes mongoDB connection and cancel context.
-func close(client *mongo.Client, ctx context.Context,
+func Close(client *mongo.Client, ctx context.Context,
 	cancel context.CancelFunc) {
 
 	// CancelFunc to cancel to context
@@ -42,7 +42,7 @@ func close(client *mongo.Client, ctx context.Context,
 // context.CancelFunc will be used to cancel context and
 // resource associated with it.
 
-func connect(uri string) (*mongo.Client, context.Context,
+func Connect(uri string) (*mongo.Client, context.Context,
 	context.CancelFunc, error) {
 
 	// ctx will be used to set deadline for process, here
@@ -70,9 +70,7 @@ func ping(client *mongo.Client, ctx context.Context) error {
 	fmt.Println("connected successfully")
 	return nil
 }
-
-func Main() {
-
+func Main() (*mongo.Client, context.Context, context.CancelFunc) {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file")
@@ -84,15 +82,18 @@ func Main() {
 	// err from connect method.
 	URI := fmt.Sprintf("mongodb+srv://%s:%s@gomongo.mfrgw7n.mongodb.net/?retryWrites=true&w=majority", os.Getenv("MONGOUSER"), os.Getenv("MONGOPASSWORD"))
 
-	client, ctx, cancel, err := connect(URI)
+	client, ctx, cancel, err := Connect(URI)
 	if err != nil {
 		panic(err)
 	}
 
 	// Release resource when the main
 	// function is returned.
-	defer close(client, ctx, cancel)
+
+	/* close connection */
+	// defer close(client, ctx, cancel)
 
 	// Ping mongoDB with Ping method
 	ping(client, ctx)
+	return client, ctx, cancel
 }
