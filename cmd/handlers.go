@@ -6,10 +6,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ashutoshbr/GoCRUD/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	"github.com/ashutoshbr/GoCRUD/database"
 )
 
 func GetHome(w http.ResponseWriter, r *http.Request) {

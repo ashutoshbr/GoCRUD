@@ -7,7 +7,6 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	// mux.HandleFunc("/", GetHome)
 	mux.HandleFunc("/", GetHome)
 	log.Println("Listening on port 8000")
 
