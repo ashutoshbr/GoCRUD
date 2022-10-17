@@ -12,8 +12,8 @@ func main() {
 	mux.HandleFunc("/read", read)
 	mux.HandleFunc("/update", update)
 	mux.HandleFunc("/delete", delete)
-	log.Println("Listening on port 8000")
 
+	log.Println("Listening on port 8000")
 	err := http.ListenAndServe(":8000", mux)
 	log.Fatal(err)
 }
