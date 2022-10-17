@@ -32,6 +32,6 @@ func Connect() *mongo.Client {
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected and pinged.")
+	fmt.Println("\nSuccessfully connected and pinged.")
 	return client
 }

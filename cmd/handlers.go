@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -47,11 +48,20 @@ func create(w http.ResponseWriter, r *http.Request) {
 	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
 	defer client.Disconnect(context.TODO())
 
-	person1 := models.Person{"Abc Xyz", 5}
+	if r.Method != "POST" {
+		json.NewEncoder(w).Encode("Only POST method allowed!")
+		panic("Only POST method allowed!")
+	}
+	p, _ := io.ReadAll(r.Body)
+	var temp models.Person
+	json.Unmarshal(p, &temp)
+	person1 := models.Person(temp)
 	_, err := coll.InsertOne(context.TODO(), person1)
 	if err != nil {
 		panic(err)
 	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(temp)
 }
 
 func update(w http.ResponseWriter, r *http.Request) {
