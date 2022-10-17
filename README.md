@@ -12,14 +12,23 @@ DELETE    localhost:8000/delete
 ## Dependencies 🔧
 - MongoDB drivers
 
+## .env 🔐
+```
+MONGOUSER=
+MONGOPASSWORD=
+DBNAME=
+COLLNAME=
+```
+
 ## Execution ⚙️
 1. Install the required dependencies.
 ```bash
 go mod dowload
 ```
-2. Run locally.
+2. Place the .env file in the root directory.
+3. Run locally.
 ```bash
 # Runs at port 8000 by default
 go build .\cmd\ && .\cmd.exe
 ```
-3. Use `curl` or `postman` or any other client to perform CRUD operations at the available routes.
+4. Use `curl` or `postman` or any other client to perform CRUD operations at the available routes.
