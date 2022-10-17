@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -12,7 +13,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetHome(w http.ResponseWriter, r *http.Request) {
+func getHome(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("Greetings! Welcome to the Homepage.")
+}
+
+func read(w http.ResponseWriter, r *http.Request) {
 	// db connection
 	client := database.Connect()
 	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
@@ -29,14 +35,13 @@ func GetHome(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var results []bson.D
-	err = cursor.All(context.TODO(), &results)
+	cursor.All(context.TODO(), &results)
 
-	for _, result := range results {
-		fmt.Println(result)
-	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(results)
 }
 
-func Create(w http.ResponseWriter, r *http.Request) {
+func create(w http.ResponseWriter, r *http.Request) {
 	// db connection
 	client := database.Connect()
 	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
@@ -49,7 +54,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Update(w http.ResponseWriter, r *http.Request) {
+func update(w http.ResponseWriter, r *http.Request) {
 	// db connection
 	client := database.Connect()
 	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
@@ -65,7 +70,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	fmt.Print("Updated count:", result.ModifiedCount)
 }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+func delete(w http.ResponseWriter, r *http.Request) {
 	// db connection
 	client := database.Connect()
 	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
