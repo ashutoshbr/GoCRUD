@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/ashutoshbr/GoCRUD/database"
+	"github.com/ashutoshbr/GoCRUD/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -29,24 +30,37 @@ func GetHome(w http.ResponseWriter, r *http.Request) {
 
 	var results []bson.D
 	err = cursor.All(context.TODO(), &results)
+
 	for _, result := range results {
 		fmt.Println(result)
 	}
 }
 
-// func Create(w http.ResponseWriter, r *http.Request) {
-// 	// db connection
-// 	// client, ctx, cancel := database.Main()
-// 	var client, ctx, cancel, err = database.Connect(URI)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer database.Close(client, ctx, cancel)
-// 	collection := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
+func Create(w http.ResponseWriter, r *http.Request) {
+	// db connection
+	client := database.Connect()
+	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
+	defer client.Disconnect(context.TODO())
 
-// 	person1 := models.Person{"Foo Bar", 20}
-// 	_, err = collection.InsertOne(ctx, person1)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
+	person1 := models.Person{"Abc Xyz", 5}
+	_, err := coll.InsertOne(context.TODO(), person1)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Update(w http.ResponseWriter, r *http.Request) {
+	// db connection
+	client := database.Connect()
+	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
+	defer client.Disconnect(context.TODO())
+
+	filter := bson.D{{"age", 5}}
+	update := bson.D{{"$set", bson.D{{"age", 50}}}}
+	result, err := coll.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print("Updated count:", result.ModifiedCount)
+}
