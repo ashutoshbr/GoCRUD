@@ -64,3 +64,18 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Print("Updated count:", result.ModifiedCount)
 }
+
+func Delete(w http.ResponseWriter, r *http.Request) {
+	// db connection
+	client := database.Connect()
+	coll := client.Database(os.Getenv("DBNAME")).Collection(os.Getenv("COLLNAME"))
+	defer client.Disconnect(context.TODO())
+
+	filter := bson.D{{"age", 5}}
+	result, err := coll.DeleteOne(context.TODO(), filter)
+
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print("Deleted count:", result.DeletedCount)
+}
